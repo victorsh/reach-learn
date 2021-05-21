@@ -1,5 +1,7 @@
 import React from 'react';
 
+// These are basically the different pages
+
 const exports = {};
 
 exports.Wrapper = class extends React.Component {

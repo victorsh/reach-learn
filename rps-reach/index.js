@@ -9,7 +9,7 @@ import * as reach from '@reach-sh/stdlib/ALGO';
 
 const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
 const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
-const {standardUnit} = reach;
+const {standardUnit} = reach; // <- WHAT IS THIS? (ETH/ALGO?)
 const defaults = {defaultFundAmt: '10', defaultWager: '3', standardUnit};
 
 class App extends React.Component {
@@ -17,22 +17,27 @@ class App extends React.Component {
     super(props);
     this.state = {view: 'ConnectAccount', ...defaults};
   }
+
   async componentDidMount() {
-    const acc = await reach.getDefaultAccount();
+    const acc = await reach.getDefaultAccount(); // Connects to browser plugin?
     const balAtomic = await reach.balanceOf(acc);
     const bal = reach.formatCurrency(balAtomic, 4);
     this.setState({acc, bal});
+
+    // If faucet works then get faucet, else got to D/A view
     try {
-      const faucet = await reach.getFaucet();
+      const faucet = await reach.getFaucet(); // Faucet does not work for ALGO
       this.setState({view: 'FundAccount', faucet});
     } catch (e) {
       this.setState({view: 'DeployerOrAttacher'});
     }
   }
+
   async fundAccount(fundAmount) {
     await reach.transfer(this.state.faucet, this.state.acc, reach.parseCurrency(fundAmount));
     this.setState({view: 'DeployerOrAttacher'});
   }
+
   async skipFundAccount() { this.setState({view: 'DeployerOrAttacher'}); }
   selectAttacher() { this.setState({view: 'Wrapper', ContentView: Attacher}); }
   selectDeployer() { this.setState({view: 'Wrapper', ContentView: Deployer}); }
@@ -41,13 +46,16 @@ class App extends React.Component {
 
 class Player extends React.Component {
   random() { return reach.hasRandom.random(); }
+
   async getHand() { // Fun([], UInt)
     const hand = await new Promise(resolveHandP => {
       this.setState({view: 'GetHand', playable: true, resolveHandP});
     });
     this.setState({view: 'WaitingForResults', hand});
+
     return handToInt[hand];
   }
+
   seeOutcome(i) { this.setState({view: 'Done', outcome: intToOutcome[i]}); }
   informTimeout() { this.setState({view: 'Timeout'}); }
   playHand(hand) { this.state.resolveHandP(hand); }
@@ -58,7 +66,9 @@ class Deployer extends Player {
     super(props);
     this.state = {view: 'SetWager'};
   }
+
   setWager(wager) { this.setState({view: 'Deploy', wager}); }
+
   async deploy() {
     const ctc = this.props.acc.deploy(backend);
     this.setState({view: 'Deploying', ctc});
@@ -67,6 +77,7 @@ class Deployer extends Player {
     const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
     this.setState({view: 'WaitingForAttacher', ctcInfoStr});
   }
+
   render() { return renderView(this, DeployerViews); }
 }
 

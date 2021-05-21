@@ -1,0 +1,1 @@
+1. A gets wager from frontend, declassifies it
