@@ -23,6 +23,6 @@ Check & Clear Port
 - `sudo kill -9 <PID>`
 
 Docker
-- `docker kill $(docker ps -q)`
+- `docker kill $(docker ps -q) && docker rm $(docker ps -qa)`
 - `docker rm $(docker ps -qa)`
 

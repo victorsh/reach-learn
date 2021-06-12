@@ -9,7 +9,7 @@ import * as reach from '@reach-sh/stdlib/ALGO';
 
 const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
 const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
-const {standardUnit} = reach; // <- WHAT IS THIS? (ETH/ALGO?)
+const {standardUnit} = reach;
 const defaults = {defaultFundAmt: '10', defaultWager: '3', standardUnit};
 
 class App extends React.Component {
